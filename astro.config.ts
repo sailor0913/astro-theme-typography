@@ -1,9 +1,11 @@
 import mdx from '@astrojs/mdx'
+import react from '@astrojs/react'
 import sitemap from '@astrojs/sitemap'
 import swup from '@swup/astro'
 import { defineConfig } from 'astro/config'
 import robotsTxt from 'astro-robots-txt'
 import UnoCSS from 'unocss/astro'
+
 import { themeConfig } from './src/.config'
 
 // https://astro.build/config
@@ -33,5 +35,6 @@ export default defineConfig({
       updateHead: true,
       updateBodyClass: true,
     }),
+    react(),
   ],
 })

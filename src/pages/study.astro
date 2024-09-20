@@ -1,0 +1,128 @@
+---
+import { Client } from '@notionhq/client'
+import type { PageObjectResponse } from '@notionhq/client/build/src/api-endpoints'
+import LayoutDefault from '../layouts/LayoutDefault.astro'
+import AchievementBadge from '../react-components/AchievementBadge.jsx'
+import ActivityTimeline from '../react-components/ActivityTimeline.jsx'
+import ProgressCircle from '../react-components/ProgressCircle.jsx'
+
+// 初始化 Notion 客户端
+const notion = new Client({ auth: import.meta.env.NOTION_API_KEY })
+
+// 数据库 ID
+const databaseReadProcessId = '4d353eb81c364cfcb615b72238630e37'
+const databaseTodayActivityId = '10769034c78f80efbeeaffc6c1dc16d6'
+const databaseAchievementsId = '472d3b0f87b44e6e8cd30a58ce507b90'
+
+// 获取阅读进度数据库内容
+const readResponse = await notion.databases.query({
+  database_id: databaseReadProcessId,
+})
+
+// 获取今日活动数据库内容
+const today = new Date().toISOString().split('T')[0] // 获取今天的日期，格式为 YYYY-MM-DD
+const activityResponse = await notion.databases.query({
+  database_id: databaseTodayActivityId,
+  filter: {
+    property: '活动日期',
+    date: {
+      equals: today,
+    },
+  },
+})
+
+// 获取成就数据
+const achievementsResponse = await notion.databases.query({
+  database_id: databaseAchievementsId,
+})
+
+// 处理阅读进度数据
+const books = readResponse.results
+  .filter((page): page is PageObjectResponse => 'properties' in page)
+  .map((page) => {
+    const props = page.properties
+    const readPages = props.已阅读页数.type === 'number' ? (props.已阅读页数.number ?? 0) : 0
+    const totalPages = props.总页数.type === 'number' ? (props.总页数.number ?? 0) : 0
+    return {
+      title: props.书名.type === 'title' ? (props.书名.title[0]?.plain_text ?? '') : '',
+      readPages,
+      totalPages,
+      coverImage:
+        props.封面图片.type === 'files' && props.封面图片.files[0]?.type === 'file'
+          ? props.封面图片.files[0].file.url
+          : '',
+      progress: totalPages > 0 ? (readPages / totalPages) * 100 : 0,
+    }
+  })
+
+// 处理今日活动数据
+const activities = activityResponse.results
+  .filter((page): page is PageObjectResponse => 'properties' in page)
+  .map((page) => {
+    const props = page.properties
+    return {
+      title: props.活动名称.type === 'title' ? (props.活动名称.title[0]?.plain_text ?? '') : '',
+      description: props.内容.type === 'rich_text' ? (props.内容.rich_text[0]?.plain_text ?? '') : '',
+    }
+  })
+
+// 处理成就数据
+const achievements = achievementsResponse.results
+  .filter((page): page is PageObjectResponse => 'properties' in page)
+  .map((page) => {
+    const props = page.properties
+    return {
+      title: props.名称.type === 'title' ? (props.名称.title[0]?.plain_text ?? '') : '',
+      count: props.数量.type === 'number' ? (props.数量.number ?? 0) : 0,
+      icon: props.图标.type === 'rich_text' ? (props.图标.rich_text[0]?.plain_text ?? '🏆') : '🏆',
+      unit: '个', // 如果您也想自定义单位，可以在数据库中添加一个单位字段
+    }
+  })
+
+const todayFormatted = new Date().toLocaleDateString('zh-CN', {
+  year: 'numeric',
+  month: 'long',
+  day: 'numeric',
+})
+---
+
+<LayoutDefault>
+  <main class="container mx-auto px-4 py-8">
+    <section class="mb-12">
+      <h2 class="text-3xl font-bold mb-6 text-center">我的阅读进度</h2>
+      <div class="flex flex-wrap justify-center gap-8">
+        {
+          books.map((book) => (
+            <div class="flex flex-col items-center">
+              <ProgressCircle progress={book.progress} label={book.title} imageSrc={book.coverImage} />
+              <p class="mt-2 text-center">
+                {book.readPages}/{book.totalPages}
+              </p>
+            </div>
+          ))
+        }
+      </div>
+    </section>
+
+    <section class="mb-12">
+      <h2 class="text-3xl font-bold mb-6 text-center">今日活动（{todayFormatted}）</h2>
+      <ActivityTimeline activities={activities} />
+    </section>
+
+    <section>
+      <h2 class="text-3xl font-bold mb-6 text-center">我的成就</h2>
+      <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+        {
+          achievements.map((achievement) => (
+            <AchievementBadge
+              title={achievement.title}
+              icon={achievement.icon}
+              count={achievement.count}
+              unit={achievement.unit}
+            />
+          ))
+        }
+      </div>
+    </section>
+  </main>
+</LayoutDefault>
