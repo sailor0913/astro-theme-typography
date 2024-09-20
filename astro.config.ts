@@ -1,6 +1,7 @@
 import mdx from '@astrojs/mdx'
 import react from '@astrojs/react'
 import sitemap from '@astrojs/sitemap'
+import vercel from '@astrojs/vercel/serverless'
 import swup from '@swup/astro'
 import { defineConfig } from 'astro/config'
 import robotsTxt from 'astro-robots-txt'
@@ -37,4 +38,6 @@ export default defineConfig({
     }),
     react(),
   ],
+  output: 'hybrid',
+  adapter: vercel(),
 })
