@@ -1,0 +1,34 @@
+---
+interface Props {
+  src: string
+  alt: string
+  width?: string
+  caption?: string
+}
+
+const { src, alt, width = '100%', caption } = Astro.props
+---
+
+<figure class="image-container">
+  <img src={src} alt={alt} class="centered-image" />
+  {caption && <figcaption>{caption}</figcaption>}
+</figure>
+
+<style>
+  .image-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 1em 0;
+  }
+  .centered-image {
+    max-width: var(--image-width, 100%);
+    height: auto;
+  }
+  figcaption {
+    margin-top: 0.5em;
+    text-align: center;
+    font-style: italic;
+    color: #666;
+  }
+</style>
