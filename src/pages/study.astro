@@ -22,7 +22,10 @@ const readResponse = await notion.databases.query({
 })
 
 // 获取今日活动数据库内容
-const today = new Date().toISOString().split('T')[0] // 获取今天的日期，格式为 YYYY-MM-DD
+const beijingTime = new Date(
+  new Date().toLocaleString('en-US', { timeZone: import.meta.env.VITE_TIMEZONE || 'Asia/Shanghai' }),
+)
+const today = beijingTime.toISOString().split('T')[0] // 获取北京时间的日期，格式为 YYYY-MM-DD
 const activityResponse = await notion.databases.query({
   database_id: databaseTodayActivityId,
   filter: {
@@ -81,10 +84,11 @@ const achievements = achievementsResponse.results
     }
   })
 
-const todayFormatted = new Date().toLocaleDateString('zh-CN', {
+const todayFormatted = beijingTime.toLocaleDateString('zh-CN', {
   year: 'numeric',
   month: 'long',
   day: 'numeric',
+  timeZone: import.meta.env.VITE_TIMEZONE || 'Asia/Shanghai',
 })
 ---
 
