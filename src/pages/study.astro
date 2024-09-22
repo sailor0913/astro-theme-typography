@@ -22,7 +22,7 @@ const readResponse = await notion.databases.query({
 })
 
 // 获取今日活动数据库内容
-const beijingTime = new Date(new Date().toLocaleString('en-US', { timeZone: 'Asia/Shanghai' }))
+const beijingTime = new Date(new Date().getTime() + 8 * 60 * 60 * 1000)
 const today = beijingTime.toISOString().slice(0, 10) // 获取北京时间的日期，格式为 YYYY-MM-DD
 const activityResponse = await notion.databases.query({
   database_id: databaseTodayActivityId,
@@ -86,7 +86,7 @@ const todayFormatted = beijingTime.toLocaleString('zh-CN', {
   year: 'numeric',
   month: 'long',
   day: 'numeric',
-  timeZone: 'Asia/Shanghai',
+  timeZone: 'UTC',
 })
 ---
 
