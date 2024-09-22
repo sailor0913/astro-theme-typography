@@ -77,7 +77,7 @@ const achievements = achievementsResponse.results
       title: props.名称.type === 'title' ? (props.名称.title[0]?.plain_text ?? '') : '',
       count: props.数量.type === 'number' ? (props.数量.number ?? 0) : 0,
       icon: props.图标.type === 'rich_text' ? (props.图标.rich_text[0]?.plain_text ?? '🏆') : '🏆',
-      unit: '个', // 如果您也想自定义单位，可以在数据库中添加一个单位字段
+      unit: props.单位.type === 'rich_text' ? (props.单位.rich_text[0]?.plain_text ?? '个') : '个',
     }
   })
 
