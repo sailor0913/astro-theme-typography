@@ -7,9 +7,10 @@ export const defaultConfig: ThemeConfig = {
   site: {
     title: '活版印字',
     subtitle: 'Typography',
-    author: 'Typography',
+    author: 'Moeyua',
     description: 'Rediscory the beauty of typography',
     website: 'https://astro-theme-typography.vercel.app/',
+    pageSize: 5,
     socialLinks: [
       {
         name: 'github',
@@ -31,7 +32,7 @@ export const defaultConfig: ThemeConfig = {
     navLinks: [
       {
         name: 'Posts',
-        href: '/posts/page/1',
+        href: '/',
       },
       {
         name: 'Archive',
@@ -47,17 +48,22 @@ export const defaultConfig: ThemeConfig = {
       },
     ],
     categoryMap: [{ name: '胡适', path: 'hu-shi' }],
+    footer: [
+      '© %year <a target="_blank" href="%website">%author</a>',
+      'Theme <a target="_blank" href="https://github.com/Moeyua/astro-theme-typography">Typography</a> by <a target="_blank" href="https://moeyua.com">Moeyua</a>',
+      'Proudly published with <a target="_blank" href="https://astro.build/">Astro</a>',
+    ],
   },
   appearance: {
-    theme: 'light',
+    theme: 'system',
     locale: 'zh-cn',
     colorsLight: {
-      foreground: '#2e405b',
+      primary: '#2e405b',
       background: '#ffffff',
     },
     colorsDark: {
-      foreground: '#ffffff',
-      background: '#2e405b',
+      primary: '#FFFFFF',
+      background: '#232222',
     },
     fonts: {
       header:
@@ -70,10 +76,17 @@ export const defaultConfig: ThemeConfig = {
     meta: [],
     link: [],
   },
+  rss: {
+    fullText: true,
+  },
   comment: {
     // disqus: { shortname: "typography-astro" },
   },
-  rss: {
-    fullText: true,
+  analytics: {
+    googleAnalyticsId: '',
+    umamiAnalyticsId: '',
+  },
+  latex: {
+    katex: false,
   },
 }

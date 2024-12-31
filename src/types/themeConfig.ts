@@ -20,6 +20,8 @@ export interface ThemeConfig {
   seo: ConfigSEO
   comment: Partial<ConfigComment>
   rss: ConfigRSS
+  analytics: ConfigAnalytics
+  latex: ConfigLaTeX
 }
 
 export type UserConfig = DeepPartial<ThemeConfig>
@@ -30,13 +32,15 @@ export interface ConfigSite {
   author: string
   description: string
   website: string
+  pageSize: number
   socialLinks: { name: string, href: string }[]
   navLinks: { name: string, href: string }[]
   categoryMap: { name: string, path: string }[]
+  footer: string[]
 }
 
 export interface ConfigAppearance {
-  theme: 'light' | 'dark'
+  theme: 'light' | 'dark' | 'system'
   locale: keyof typeof LANGUAGES
   colorsDark: Colors
   colorsLight: Colors
@@ -61,8 +65,18 @@ export interface ConfigRSS {
   follow?: { feedId: string, userId: string }
 }
 
+export interface ConfigAnalytics {
+  /** google analytics */
+  googleAnalyticsId: string
+  umamiAnalyticsId: string
+}
+
+export interface ConfigLaTeX {
+  katex: boolean
+}
+
 interface Colors {
-  foreground: string
+  primary: string
   background: string
 }
 

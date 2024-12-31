@@ -3,8 +3,10 @@ import react from '@astrojs/react'
 import sitemap from '@astrojs/sitemap'
 import vercel from '@astrojs/vercel/serverless'
 import swup from '@swup/astro'
-import { defineConfig } from 'astro/config'
 import robotsTxt from 'astro-robots-txt'
+import { defineConfig } from 'astro/config'
+import rehypeKatex from 'rehype-katex'
+import remarkMath from 'remark-math'
 import UnoCSS from 'unocss/astro'
 
 import { themeConfig } from './src/.config'
@@ -13,9 +15,14 @@ import { themeConfig } from './src/.config'
 export default defineConfig({
   site: themeConfig.site.website,
   prefetch: true,
+  base: '/',
   markdown: {
-    remarkPlugins: [],
-    rehypePlugins: [],
+    remarkPlugins: [
+      remarkMath,
+    ],
+    rehypePlugins: [
+      rehypeKatex,
+    ],
     shikiConfig: {
       theme: 'dracula',
       wrap: true,
@@ -23,7 +30,7 @@ export default defineConfig({
   },
   integrations: [
     UnoCSS({ injectReset: true }),
-    mdx(),
+    mdx({}),
     robotsTxt(),
     sitemap(),
     swup({
